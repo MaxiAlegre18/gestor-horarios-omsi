@@ -1,5 +1,6 @@
 package com.aprendiendo.gestor_horarios_omsi.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Turno {
@@ -8,11 +9,11 @@ public class Turno {
     private TipoJornada tipoJornada;
     private List<Viaje> listaViajes;
 
-    public Turno(String nombre, String garage, TipoJornada tipoJornada, List<Viaje> listaViajes) {
+    public Turno(String nombre, String garage, TipoJornada tipoJornada) {
         this.nombre = nombre;
         this.garage = garage;
         this.tipoJornada = tipoJornada;
-        this.listaViajes = listaViajes;
+        this.listaViajes = new ArrayList<>();
     }
 
     public String getNombre() {
@@ -29,6 +30,10 @@ public class Turno {
 
     public List<Viaje> getListaViajes() {
         return listaViajes;
+    }
+
+    public void agregarViaje(Viaje viaje) {
+        listaViajes.add(viaje);
     }
 
 }

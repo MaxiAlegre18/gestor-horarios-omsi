@@ -13,4 +13,14 @@ public enum TipoJornada {
         return this.numeroTipoJornada;
     }
 
+    public static TipoJornada desdeInt(int valor) {
+        for (TipoJornada tipo : values()) {
+            if (tipo.getNumeroTipoJornada() == valor) {
+                return tipo;
+            }
+        }
+
+        throw new IllegalArgumentException("El número de jornada " + valor + " no es válido.");
+    }
+
 }
