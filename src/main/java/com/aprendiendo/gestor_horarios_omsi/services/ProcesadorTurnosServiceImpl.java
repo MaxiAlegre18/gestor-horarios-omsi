@@ -81,7 +81,7 @@ public class ProcesadorTurnosServiceImpl implements ProcesadorTurnosService {
         String nombreUnico = columnas[0].trim();
         int numeroPerfil = Integer.parseInt(columnas[1].trim());
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
         LocalTime horaInicio = LocalTime.parse(columnas[2].trim(), formatter);
 
         Viaje nuevoViaje = new Viaje(nombreUnico, numeroPerfil, horaInicio);

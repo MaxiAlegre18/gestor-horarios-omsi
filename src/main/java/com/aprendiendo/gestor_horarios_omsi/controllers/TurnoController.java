@@ -30,7 +30,7 @@ public class TurnoController {
         return new String("Hola");
     }
 
-    @PostMapping("/generar-archivo")
+    @PostMapping(value = "/generar-archivo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<byte[]> generarArchivoTurno(
             @RequestParam("nombre") String nombre,
             @RequestParam("garage") String garage,

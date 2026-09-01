@@ -16,7 +16,7 @@ public class FormatearTurnoUtil {
     public static byte[] formatearTurno(Turno turno) {
         armarCabeceraTurno(turno);
 
-        DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("H:mm");
 
         for (Viaje viaje : turno.getListaViajes()) {
             armarViaje(formatterHora, viaje);
@@ -43,7 +43,7 @@ public class FormatearTurnoUtil {
         sb.append("[addtrip]").append(SALTO_LINEA);
         sb.append(viaje.getNombreUnico()).append(SALTO_LINEA);
         sb.append(viaje.getNumeroPerfil()).append(SALTO_LINEA);
-        sb.append(viaje.getHoraInicioEnMinutos()).append(SALTO_LINEA);
+        sb.append(viaje.getHoraInicioEnMinutos()).append(".000").append(SALTO_LINEA);
         sb.append(SALTO_LINEA);
     }
 }
