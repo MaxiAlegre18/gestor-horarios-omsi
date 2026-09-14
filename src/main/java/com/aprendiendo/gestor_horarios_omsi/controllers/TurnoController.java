@@ -31,9 +31,7 @@ public class TurnoController {
             @RequestParam("jornada") int jornada,
             @RequestParam("archivo") MultipartFile archivo) {
 
-        if (formatoInvalido(archivo.getOriginalFilename())) {
-            throw new IllegalArgumentException("El archivo subido no tiene formato csv");
-        }
+        validarFormatoCsv(archivo);
 
         byte[] archivoGenerado = procesadorTurnosService.procesarArchivoYGenerarTurno(nombre, garage, jornada,
                 archivo);
@@ -49,8 +47,11 @@ public class TurnoController {
         return new ResponseEntity<>(archivoGenerado, headers, HttpStatus.OK);
     }
 
-    private boolean formatoInvalido(String nombreArchivo) {
-        return nombreArchivo == null || !nombreArchivo.toLowerCase().endsWith(".csv");
+    private void validarFormatoCsv(MultipartFile archivo) {
+        String nombreArchivo = archivo.getOriginalFilename();
+        if (nombreArchivo == null || !nombreArchivo.toLowerCase().endsWith(".csv")) {
+            throw new IllegalArgumentException("El archivo subido no tiene formato .csv");
+        }
     }
 
 }
