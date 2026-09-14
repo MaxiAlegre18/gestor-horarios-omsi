@@ -9,7 +9,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,11 +24,6 @@ public class TurnoController {
         this.procesadorTurnosService = procesadorTurnosService;
     }
 
-    @GetMapping("/live")
-    public String getMethodName() {
-        return new String("Hola");
-    }
-
     @PostMapping(value = "/generar-archivo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<byte[]> generarArchivoTurno(
             @RequestParam("nombre") String nombre,
@@ -37,38 +31,26 @@ public class TurnoController {
             @RequestParam("jornada") int jornada,
             @RequestParam("archivo") MultipartFile archivo) {
 
-        String nombreArchivo = archivo.getOriginalFilename();
-        if (nombreArchivo == null || !nombreArchivo.toLowerCase().endsWith(".csv")) {
-            String mensajeError = "Error: El archivo subido no tiene formato .csv";
-            return ResponseEntity
-                    .badRequest()
-                    .body(mensajeError.getBytes());
+        if (formatoInvalido(archivo.getOriginalFilename())) {
+            throw new IllegalArgumentException("El archivo subido no tiene formato csv");
         }
 
-        try {
-            byte[] archivoGenerado = procesadorTurnosService.procesarArchivoYGenerarTurno(nombre, garage, jornada,
-                    archivo);
+        byte[] archivoGenerado = procesadorTurnosService.procesarArchivoYGenerarTurno(nombre, garage, jornada,
+                archivo);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.TEXT_PLAIN);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
 
-            String nombreLimpio = nombre.replaceAll("\\s+", "_");
-            String nombreArchivoDescarga = "Turno_" + nombreLimpio + ".txt";
+        String nombreLimpio = nombre.replaceAll("\\s+", "_");
+        String nombreArchivoDescarga = "Turno_" + nombreLimpio + ".txt";
 
-            headers.setContentDispositionFormData("attachment", nombreArchivoDescarga);
+        headers.setContentDispositionFormData("attachment", nombreArchivoDescarga);
 
-            return new ResponseEntity<>(archivoGenerado, headers, HttpStatus.OK);
+        return new ResponseEntity<>(archivoGenerado, headers, HttpStatus.OK);
+    }
 
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(("Error de validación: " + e.getMessage()).getBytes());
-
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(("Error interno del servidor: " + e.getMessage()).getBytes());
-        }
+    private boolean formatoInvalido(String nombreArchivo) {
+        return nombreArchivo == null || !nombreArchivo.toLowerCase().endsWith(".csv");
     }
 
 }
