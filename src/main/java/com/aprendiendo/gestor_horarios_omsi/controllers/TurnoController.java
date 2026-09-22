@@ -26,17 +26,17 @@ public class TurnoController {
 
     @PostMapping(value = "/generar-archivo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<byte[]> generarArchivoTurno(
-            @RequestParam("nombre") String nombre,
+            @RequestParam("nombre") String nombreTurno,
             @RequestParam("garage") String garage,
             @RequestParam("jornada") int jornada,
             @RequestParam("archivo") MultipartFile archivo) {
 
         validarFormatoCsv(archivo);
 
-        byte[] archivoGenerado = procesadorTurnosService.procesarArchivoYGenerarTurno(nombre, garage, jornada,
+        byte[] archivoGenerado = procesadorTurnosService.procesarArchivoYGenerarTurno(nombreTurno, garage, jornada,
                 archivo);
 
-        return new ResponseEntity<>(archivoGenerado, armarHttpHeaders(nombre), HttpStatus.OK);
+        return new ResponseEntity<>(archivoGenerado, armarHttpHeaders(nombreTurno), HttpStatus.OK);
     }
 
     private void validarFormatoCsv(MultipartFile archivo) {
@@ -55,8 +55,8 @@ public class TurnoController {
         return headers;
     }
 
-    private String formatearNombreArchivo(String nombreTurno) {
-        String nombreLimpio = nombreTurno.replaceAll("\\s+", "_");
+    private String formatearNombreArchivo(String nombre) {
+        String nombreLimpio = nombre.replaceAll("\\s+", "_");
         String nombreArchivoDescarga = "Turno_" + nombreLimpio + ".txt";
 
         return nombreArchivoDescarga;
