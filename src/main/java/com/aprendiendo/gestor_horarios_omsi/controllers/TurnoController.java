@@ -36,15 +36,7 @@ public class TurnoController {
         byte[] archivoGenerado = procesadorTurnosService.procesarArchivoYGenerarTurno(nombre, garage, jornada,
                 archivo);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-
-        String nombreLimpio = nombre.replaceAll("\\s+", "_");
-        String nombreArchivoDescarga = "Turno_" + nombreLimpio + ".txt";
-
-        headers.setContentDispositionFormData("attachment", nombreArchivoDescarga);
-
-        return new ResponseEntity<>(archivoGenerado, headers, HttpStatus.OK);
+        return new ResponseEntity<>(archivoGenerado, armarHttpHeaders(nombre), HttpStatus.OK);
     }
 
     private void validarFormatoCsv(MultipartFile archivo) {
@@ -52,6 +44,22 @@ public class TurnoController {
         if (nombreArchivo == null || !nombreArchivo.toLowerCase().endsWith(".csv")) {
             throw new IllegalArgumentException("El archivo subido no tiene formato .csv");
         }
+    }
+
+    private HttpHeaders armarHttpHeaders(String nombre) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+
+        headers.setContentDispositionFormData("attachment", formatearNombreArchivo(nombre));
+
+        return headers;
+    }
+
+    private String formatearNombreArchivo(String nombreTurno) {
+        String nombreLimpio = nombreTurno.replaceAll("\\s+", "_");
+        String nombreArchivoDescarga = "Turno_" + nombreLimpio + ".txt";
+
+        return nombreArchivoDescarga;
     }
 
 }
