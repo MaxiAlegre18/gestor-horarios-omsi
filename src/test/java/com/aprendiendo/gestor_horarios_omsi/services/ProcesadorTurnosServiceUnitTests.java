@@ -12,13 +12,24 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
+import com.aprendiendo.gestor_horarios_omsi.utils.FormatearTurnoUtil;
+
 public class ProcesadorTurnosServiceUnitTests {
 
     private ProcesadorTurnosServiceImpl procesadorTurnosServiceImpl;
 
     @BeforeEach
     void setUp() {
+        /*
+         * Al hacerlo de esta manera, se ignora la inyeccion de depdencias de Spring
+         */
         procesadorTurnosServiceImpl = new ProcesadorTurnosServiceImpl();
+        /*
+         * Como esta clase es estatica y las variables sobreviven en tiempo de ejecucion
+         * Debemos limpiar las variables de estado ya que si no, se ensucian los tests
+         * Esto debe cambiarse a futuro
+         */
+        FormatearTurnoUtil.limpiarEstado();
     }
 
     @Test

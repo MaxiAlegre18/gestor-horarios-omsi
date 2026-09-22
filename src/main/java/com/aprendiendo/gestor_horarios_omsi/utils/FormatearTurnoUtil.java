@@ -46,4 +46,8 @@ public class FormatearTurnoUtil {
         sb.append(viaje.getHoraInicioEnMinutos()).append(".000").append(SALTO_LINEA);
         sb.append(SALTO_LINEA);
     }
+
+    public static void limpiarEstado() {
+        sb = new StringBuilder();
+    }
 }
