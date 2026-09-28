@@ -7,30 +7,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
-import com.aprendiendo.gestor_horarios_omsi.utils.FormatearTurnoUtil;
-
+@ExtendWith(MockitoExtension.class)
 public class ProcesadorTurnosServiceUnitTests {
 
+    @InjectMocks
     private ProcesadorTurnosServiceImpl procesadorTurnosServiceImpl;
-
-    @BeforeEach
-    void setUp() {
-        /*
-         * Al hacerlo de esta manera, se ignora la inyeccion de depdencias de Spring
-         */
-        procesadorTurnosServiceImpl = new ProcesadorTurnosServiceImpl();
-        /*
-         * Como esta clase es estatica y las variables sobreviven en tiempo de ejecucion
-         * Debemos limpiar las variables de estado ya que si no, se ensucian los tests
-         * Esto debe cambiarse a futuro
-         */
-        FormatearTurnoUtil.limpiarEstado();
-    }
 
     @Test
     public void procesarCsvValidoDevuelveArchivoCorrecto() throws Exception {
@@ -65,7 +53,7 @@ public class ProcesadorTurnosServiceUnitTests {
 
     }
 
-    // funciones generadas con IA
+    // funciones auxiliares generadas con IA
 
     private MockMultipartFile generarCsvValido() throws Exception {
         try (InputStream inputStream = getClass().getResourceAsStream("/csv_valido_601/turno-coche-601.csv")) {
