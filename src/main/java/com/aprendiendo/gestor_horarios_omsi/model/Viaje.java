@@ -2,6 +2,9 @@ package com.aprendiendo.gestor_horarios_omsi.model;
 
 import java.time.LocalTime;
 
+import lombok.Builder;
+
+@Builder
 public class Viaje {
     private String nombreUnico;
     private int numeroPerfil;
