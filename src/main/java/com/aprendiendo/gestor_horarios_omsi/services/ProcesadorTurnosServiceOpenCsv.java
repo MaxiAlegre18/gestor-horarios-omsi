@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,7 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 
 @Service
+@Primary
 public class ProcesadorTurnosServiceOpenCsv implements ProcesadorTurnosService {
 
     @Override
@@ -35,17 +37,28 @@ public class ProcesadorTurnosServiceOpenCsv implements ProcesadorTurnosService {
     }
 
     private List<Viaje> extraerViajesDeCsv(MultipartFile archivo) {
+        /*
+         * Se abre el flujo de datos del archivo MultipartFile. (try-with-resources,
+         * Java cierra automaticamente el archivo)
+         */
         try (Reader reader = new BufferedReader(new InputStreamReader(archivo.getInputStream()))) {
 
             // Establecemos la estrategia de mapeo tomando de referencia una clase que
             // representa una fila del archivo CSV
             HeaderColumnNameMappingStrategy<ViajeFormatoCsv> estrategiaMapeo = new HeaderColumnNameMappingStrategy<>();
 
+            // Se establece que las filas leidas deben convertirse inicialmente en
+            // instancias de la clase ViajeFormatoCsv
             estrategiaMapeo.setType(ViajeFormatoCsv.class);
 
+            // Configura como se va a leer el archivo y se inyecta "csvToBean" al reader con
+            // la configuración dada (de ignorar lineas vacías y usando la estrategia de
+            // mapeo anterior
             CsvToBean<ViajeFormatoCsv> csvToBean = new CsvToBeanBuilder<ViajeFormatoCsv>(reader)
                     .withMappingStrategy(estrategiaMapeo).withIgnoreEmptyLine(true).build();
 
+            // csvToBean.parse() ejecuta la lectura del CSV y devuelve una
+            // List<ViajeFormatoCsv>
             return csvToBean.parse().stream().map(csvLine -> Viaje.builder()
                     .nombreUnico(csvLine.getNombreUnico())
                     .numeroPerfil(csvLine.getNumeroPerfil())
