@@ -16,7 +16,7 @@ Esta aplicación web recibe un archivo CSV con columnas predeterminadas y genera
 
 Si bien existen enfoques más sencillos y directos para resolver este problema (como un simple script o una aplicación de escritorio local), opté por utilizar **Java Spring Boot**. 
 
-El objetivo principal detrás de esta decisión es netamente educativo. Esta es mi primera aplicación con el framework, por lo que el código se encuentra en constante evolución: a medida que aprendo nuevos conceptos, actualizo y mejoro el sistema. Sé que usar Spring Boot para un problema de este tamaño es como *matar un mosquito con una bazooka*, pero resultó ser el proyecto perfecto para asentar mis bases prácticas.
+El objetivo principal detrás de esta decisión es netamente educativo. Esta es mi primera aplicación con el framework, por lo que el código se encuentra en constante evolución: a medida que aprendo nuevos conceptos, actualizo y mejoro el sistema. Sé que usar Spring Boot para un problema de este tamaño es como *matar un mosquito con una bazooka*, pero resultó ser el proyecto perfecto para asentar mis bases prácticas ya que resuelve una necesidad real.
 
 ## Instalación y Uso
 
