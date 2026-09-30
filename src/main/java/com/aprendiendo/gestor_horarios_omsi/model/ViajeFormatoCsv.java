@@ -18,11 +18,11 @@ import lombok.Setter;
 @Builder
 public class ViajeFormatoCsv {
 
-    @CsvBindByPosition(position = 0)
+    @CsvBindByPosition(position = 0, required = true)
     private String nombreUnico;
-    @CsvBindByPosition(position = 1)
+    @CsvBindByPosition(position = 1, required = true)
     private int numeroPerfil;
-    @CsvBindByPosition(position = 2)
+    @CsvBindByPosition(position = 2, required = true)
     @CsvDate("H:mm")
     private LocalTime horaInicio;
 
