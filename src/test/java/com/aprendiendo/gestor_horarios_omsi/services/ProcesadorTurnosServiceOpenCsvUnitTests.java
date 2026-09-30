@@ -51,7 +51,7 @@ public class ProcesadorTurnosServiceOpenCsvUnitTests {
     }
 
     @Test
-    public void procesarCsvConColumnasIntercambiadas() throws Exception {
+    public void procesarCsvConColumnasHorarioYPerfilIntercambiadas() throws Exception {
 
         MockMultipartFile archivo = generarCsvColumnasHorarioPerfilCambiadas();
 
@@ -60,6 +60,12 @@ public class ProcesadorTurnosServiceOpenCsvUnitTests {
                         archivo));
 
     }
+
+    /*
+     * 
+     * ------- ------- UTILIDADES ------- -------
+     * 
+     */
 
     private MockMultipartFile generarCsvValido() throws Exception {
         return obtenerArchivoCsv("/csv_valido_601/turno-coche-601.csv", "turno-coche-601.csv");
