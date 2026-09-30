@@ -2,7 +2,7 @@ package com.aprendiendo.gestor_horarios_omsi.model;
 
 import java.time.LocalTime;
 
-import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvDate;
 
 import lombok.AllArgsConstructor;
@@ -18,11 +18,11 @@ import lombok.Setter;
 @Builder
 public class ViajeFormatoCsv {
 
-    @CsvBindByName(column = "nombreUnico")
+    @CsvBindByPosition(position = 0)
     private String nombreUnico;
-    @CsvBindByName(column = "numeroPerfil")
+    @CsvBindByPosition(position = 1)
     private int numeroPerfil;
-    @CsvBindByName(column = "horaInicio")
+    @CsvBindByPosition(position = 2)
     @CsvDate("H:mm")
     private LocalTime horaInicio;
 

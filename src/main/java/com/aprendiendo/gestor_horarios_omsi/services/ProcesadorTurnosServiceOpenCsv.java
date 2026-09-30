@@ -15,9 +15,9 @@ import com.aprendiendo.gestor_horarios_omsi.model.Turno;
 import com.aprendiendo.gestor_horarios_omsi.model.Viaje;
 import com.aprendiendo.gestor_horarios_omsi.model.ViajeFormatoCsv;
 import com.aprendiendo.gestor_horarios_omsi.utils.FormatearTurnoUtil;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 
 @Service
 @Primary
@@ -45,15 +45,16 @@ public class ProcesadorTurnosServiceOpenCsv implements ProcesadorTurnosService {
 
             // Establecemos la estrategia de mapeo tomando de referencia una clase que
             // representa una fila del archivo CSV
-            HeaderColumnNameMappingStrategy<ViajeFormatoCsv> estrategiaMapeo = new HeaderColumnNameMappingStrategy<>();
+            // La estrategia de mapeo es por la posicion de columnas, para que no sea
+            // necesario poner una fila de cabecera
+            ColumnPositionMappingStrategy<ViajeFormatoCsv> estrategiaMapeo = new ColumnPositionMappingStrategy<>();
 
             // Se establece que las filas leidas deben convertirse inicialmente en
             // instancias de la clase ViajeFormatoCsv
             estrategiaMapeo.setType(ViajeFormatoCsv.class);
 
             // Configura como se va a leer el archivo y se inyecta "csvToBean" al reader con
-            // la configuración dada (de ignorar lineas vacías y usando la estrategia de
-            // mapeo anterior
+            // la configuración dada
             CsvToBean<ViajeFormatoCsv> csvToBean = new CsvToBeanBuilder<ViajeFormatoCsv>(reader)
                     .withMappingStrategy(estrategiaMapeo).withIgnoreEmptyLine(true).build();
 
