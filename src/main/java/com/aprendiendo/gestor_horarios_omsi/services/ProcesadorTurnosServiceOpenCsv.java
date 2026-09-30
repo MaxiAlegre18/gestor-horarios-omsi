@@ -56,7 +56,7 @@ public class ProcesadorTurnosServiceOpenCsv implements ProcesadorTurnosService {
             // Configura como se va a leer el archivo y se inyecta "csvToBean" al reader con
             // la configuración dada
             CsvToBean<ViajeFormatoCsv> csvToBean = new CsvToBeanBuilder<ViajeFormatoCsv>(reader)
-                    .withMappingStrategy(estrategiaMapeo).withIgnoreEmptyLine(true).build();
+                    .withMappingStrategy(estrategiaMapeo).withIgnoreEmptyLine(true).withThrowExceptions(true).build();
 
             // csvToBean.parse() ejecuta la lectura del CSV y devuelve una
             // List<ViajeFormatoCsv>
