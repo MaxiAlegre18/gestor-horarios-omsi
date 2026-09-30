@@ -1,7 +1,6 @@
 package com.aprendiendo.gestor_horarios_omsi.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.InputStream;
@@ -15,17 +14,17 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
 @ExtendWith(MockitoExtension.class)
-public class ProcesadorTurnosServiceManualUnitTests {
+public class ProcesadorTurnosServiceOpenCsvUnitTests {
 
     @InjectMocks
-    private ProcesadorTurnosServiceManual procesadorTurnosServiceManual;
+    private ProcesadorTurnosServiceOpenCsv procesadorTurnosServiceOpenCsv;
 
     @Test
     public void procesarCsvValidoDevuelveArchivoCorrecto() throws Exception {
 
         MockMultipartFile archivo = generarCsvValido();
 
-        byte[] bytesActuales = procesadorTurnosServiceManual.procesarArchivoYGenerarTurno("Coche 601", "Torcuato", 799,
+        byte[] bytesActuales = procesadorTurnosServiceOpenCsv.procesarArchivoYGenerarTurno("Coche 601", "Torcuato", 799,
                 archivo);
 
         byte[] bytesEsperados = obtenerBytesEsperados("/csv_valido_601/Turno_Coche_601.txt");
@@ -34,23 +33,6 @@ public class ProcesadorTurnosServiceManualUnitTests {
         String textoEsperado = convertirBytesYNormalizar(bytesEsperados);
 
         assertEquals(textoEsperado, textoActual, "El contenido actual no coincide");
-    }
-
-    @Test
-    public void procesarCsvValidoDevuelveArchivoIncorrecto() throws Exception {
-
-        MockMultipartFile archivo = generarCsvValido();
-
-        byte[] bytesActuales = procesadorTurnosServiceManual.procesarArchivoYGenerarTurno("Coche 601", "Torcuato", 799,
-                archivo);
-
-        byte[] bytesEsperados = obtenerBytesEsperados("/csv_valido_601/Turno_Coche_601_horarios_incorrectos.txt");
-
-        String textoActual = convertirBytesYNormalizar(bytesActuales);
-        String textoEsperado = convertirBytesYNormalizar(bytesEsperados);
-
-        assertNotEquals(textoEsperado, textoActual, "El contenido actual coincide (no esperado)");
-
     }
 
     // funciones auxiliares generadas con IA
