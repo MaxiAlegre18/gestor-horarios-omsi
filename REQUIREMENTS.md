@@ -1,4 +1,4 @@
-# Gestor de horarios de colectivos (OMSI 2)
+# Gestor de horarios de colectivos (OMSI 2) - Versión 1.0 de requerimientos
 Se necesita una aplicación para crear y editar los turnos de una línea de autobús para el simulador OMSI 2.
 
 Cada turno (newtour) se identifica con un nombre, el tipo de autobús utilizado y un número asociado a la jornada que realiza (por ejemplo, si opera de lunes a viernes el número es 799, si opera solo domingos y feriados el número es 960) Dentro de cada turno, hay varios viajes (addtrip) que se identifica con tres parámetros:
