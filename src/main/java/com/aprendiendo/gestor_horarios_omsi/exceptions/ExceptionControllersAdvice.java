@@ -23,8 +23,25 @@ public class ExceptionControllersAdvice {
                 .body("Error interno del servidor: " + ex.getMessage());
     }
 
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<String> handleMaxSizeException(MaxUploadSizeExceededException exc) {
-        return ResponseEntity.badRequest().body("Error: El archivo es demasiado grande. El límite es 1MB.");
+    @ExceptionHandler(CsvColumnasFaltantes.class)
+    public ResponseEntity<String> exceptionCsvColumnasFaltantesHandler(CsvColumnasFaltantes ex) {
+        return ResponseEntity
+                .badRequest()
+                .body("Error: " + ex.getMessage());
     }
+
+    @ExceptionHandler(CsvDatosIncorrectos.class)
+    public ResponseEntity<String> exceptionCsvDatosIncorrectosHandler(CsvDatosIncorrectos ex) {
+        return ResponseEntity
+                .badRequest()
+                .body("Error: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<String> exceptionMaxSizeUploadExceededHandler(MaxUploadSizeExceededException exc) {
+        return ResponseEntity
+                .badRequest()
+                .body("Error: El archivo es demasiado grande. El límite es 1MB.");
+    }
+
 }

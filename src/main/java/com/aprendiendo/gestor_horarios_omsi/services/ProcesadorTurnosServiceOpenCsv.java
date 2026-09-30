@@ -1,6 +1,7 @@
 package com.aprendiendo.gestor_horarios_omsi.services;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
@@ -10,6 +11,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.aprendiendo.gestor_horarios_omsi.exceptions.CsvColumnasFaltantes;
+import com.aprendiendo.gestor_horarios_omsi.exceptions.CsvDatosIncorrectos;
 import com.aprendiendo.gestor_horarios_omsi.model.TipoJornada;
 import com.aprendiendo.gestor_horarios_omsi.model.Turno;
 import com.aprendiendo.gestor_horarios_omsi.model.Viaje;
@@ -18,6 +21,8 @@ import com.aprendiendo.gestor_horarios_omsi.utils.FormatearTurnoUtil;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 @Service
 @Primary
@@ -66,8 +71,20 @@ public class ProcesadorTurnosServiceOpenCsv implements ProcesadorTurnosService {
                     .horaInicio(csvLine.getHoraInicio())
                     .build()).collect(Collectors.toList());
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException("Error fatal al leer el archivo CSV: " + e.getMessage(), e);
+        } catch (RuntimeException e) {
+            Throwable causaReal = e.getCause();
+
+            if (causaReal instanceof CsvRequiredFieldEmptyException) {
+                throw new CsvColumnasFaltantes("Faltan columnas obligatorias en el CSV", causaReal);
+            }
+
+            if (causaReal instanceof CsvDataTypeMismatchException) {
+                throw new CsvDatosIncorrectos("El archivo contiene tipos de datos incorrectos", causaReal);
+            }
+
+            throw e;
         }
     }
 
