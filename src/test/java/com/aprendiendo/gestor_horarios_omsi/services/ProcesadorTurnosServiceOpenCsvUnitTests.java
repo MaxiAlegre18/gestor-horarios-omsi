@@ -35,13 +35,21 @@ public class ProcesadorTurnosServiceOpenCsvUnitTests {
         assertEquals(textoEsperado, textoActual, "El contenido actual no coincide");
     }
 
-    // funciones auxiliares generadas con IA
+    public void procesarCsvConColumnaHorarioFaltante() throws Exception {
+
+    }
 
     private MockMultipartFile generarCsvValido() throws Exception {
-        try (InputStream inputStream = getClass().getResourceAsStream("/csv_valido_601/turno-coche-601.csv")) {
+        return obtenerArchivoCsv("/csv_valido_601/turno-coche-601.csv", "turno-coche-601.csv");
+    }
+
+    // funciones auxiliares generadas con IA
+
+    private MockMultipartFile obtenerArchivoCsv(String direccion, String nombreArchivo) throws Exception {
+        try (InputStream inputStream = getClass().getResourceAsStream(direccion)) {
 
             assertNotNull(inputStream, "No se encontró el archivo CSV en la ruta");
-            return new MockMultipartFile("archivo", "turno-coche-601.csv", "text/csv", inputStream);
+            return new MockMultipartFile("archivo", nombreArchivo, "text/csv", inputStream);
         }
     }
 
