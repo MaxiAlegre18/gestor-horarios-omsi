@@ -7,25 +7,25 @@ Torcuato
 
 ------------------------------------
 
-  Dep.: 5:00:00
+  Dep.: 5:0:0
 [addtrip]
 501_Lemos-Fonavi
 1
 300.000
 
-  Dep.: 5:50:00
+  Dep.: 5:50:0
 [addtrip]
 501_Fonavi-Lemos
 0
 350.000
 
-  Dep.: 6:20:00
+  Dep.: 6:20:0
 [addtrip]
 501_Lemos-Fonavi
 0
 380.000
 
-  Dep.: 7:20:00
+  Dep.: 7:20:0
 [addtrip]
 501_Fonavi-Lemos
 0
@@ -40,25 +40,25 @@ Torcuato
 
 ------------------------------------
 
-  Dep.: 5:10:00
+  Dep.: 5:10:0
 [addtrip]
 501_Lemos-Fonavi
 1
 310.000
 
-  Dep.: 6:00:00
+  Dep.: 6:0:0
 [addtrip]
 501_Fonavi-Lemos
 0
 360.000
 
-  Dep.: 6:30:00
+  Dep.: 6:30:0
 [addtrip]
 501_Lemos-Fonavi
 0
 390.000
 
-  Dep.: 7:30:00
+  Dep.: 7:30:0
 [addtrip]
 501_Fonavi-Lemos
 0

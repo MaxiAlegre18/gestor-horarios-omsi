@@ -15,7 +15,7 @@ public class FormatearTurnoUtil {
     public static byte[] formatearTurno(Turno turno) {
         StringBuilder sb = armarCabeceraTurno(turno);
 
-        DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("H:mm");
+        DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("H:m");
 
         for (Viaje viaje : turno.getListaViajes()) {
             sb.append(armarViaje(formatterHora, viaje));
@@ -26,7 +26,7 @@ public class FormatearTurnoUtil {
     public static String formatearTurnoString(Turno turno) {
         StringBuilder sb = armarCabeceraTurno(turno);
 
-        DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("H:mm");
+        DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("H:m");
 
         for (Viaje viaje : turno.getListaViajes()) {
             sb.append(armarViaje(formatterHora, viaje));
@@ -50,7 +50,7 @@ public class FormatearTurnoUtil {
 
     private static StringBuilder armarViaje(DateTimeFormatter formatterHora, Viaje viaje) {
         StringBuilder sb = new StringBuilder();
-        String horaFormateada = viaje.getHoraInicio().format(formatterHora) + ":00";
+        String horaFormateada = viaje.getHoraInicio().format(formatterHora) + ":0";
         sb.append("  Dep.: ").append(horaFormateada).append(SALTO_LINEA);
         sb.append("[addtrip]").append(SALTO_LINEA);
         sb.append(viaje.getNombreUnico()).append(SALTO_LINEA);
