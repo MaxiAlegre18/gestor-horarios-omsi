@@ -23,6 +23,17 @@ public class FormatearTurnoUtil {
         return sb.toString().getBytes(StandardCharsets.UTF_8);
     }
 
+    public static String formatearTurnoString(Turno turno) {
+        StringBuilder sb = armarCabeceraTurno(turno);
+
+        DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("H:mm");
+
+        for (Viaje viaje : turno.getListaViajes()) {
+            sb.append(armarViaje(formatterHora, viaje));
+        }
+        return sb.toString();
+    }
+
     private static StringBuilder armarCabeceraTurno(Turno turno) {
         StringBuilder sb = new StringBuilder();
         sb.append(SEPARADOR).append(SALTO_LINEA);

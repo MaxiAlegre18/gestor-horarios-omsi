@@ -1,0 +1,66 @@
+------------------------------------
+
+[newtour]
+Coche 601
+Torcuato
+799
+
+------------------------------------
+
+  Dep.: 5:00:00
+[addtrip]
+501_Lemos-Fonavi
+1
+300.000
+
+  Dep.: 5:50:00
+[addtrip]
+501_Fonavi-Lemos
+0
+350.000
+
+  Dep.: 6:20:00
+[addtrip]
+501_Lemos-Fonavi
+0
+380.000
+
+  Dep.: 7:20:00
+[addtrip]
+501_Fonavi-Lemos
+0
+440.000
+
+------------------------------------
+
+[newtour]
+Coche 602
+Torcuato
+799
+
+------------------------------------
+
+  Dep.: 5:10:00
+[addtrip]
+501_Lemos-Fonavi
+1
+310.000
+
+  Dep.: 6:00:00
+[addtrip]
+501_Fonavi-Lemos
+0
+360.000
+
+  Dep.: 6:30:00
+[addtrip]
+501_Lemos-Fonavi
+0
+390.000
+
+  Dep.: 7:30:00
+[addtrip]
+501_Fonavi-Lemos
+0
+450.000
+

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -37,6 +38,17 @@ public class TurnoController {
                 archivo);
 
         return new ResponseEntity<>(archivoGenerado, armarHttpHeaders(nombreTurno), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/generar-archivo-multiples", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<byte[]> generarArchivoConMultiplesTurnos(
+            @RequestBody MultipartFile archivo) {
+
+        validarFormatoCsv(archivo);
+
+        byte[] archivoGenerado = procesadorTurnosService.procesarArchivoYGenerarMultiplesTurnos(archivo);
+
+        return new ResponseEntity<>(archivoGenerado, armarHttpHeaders("jornada"), HttpStatus.OK);
     }
 
     private void validarFormatoCsv(MultipartFile archivo) {

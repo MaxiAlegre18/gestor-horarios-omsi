@@ -4,7 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Primary;
@@ -15,6 +19,7 @@ import com.aprendiendo.gestor_horarios_omsi.exceptions.CsvColumnasFaltantes;
 import com.aprendiendo.gestor_horarios_omsi.exceptions.CsvDatosIncorrectos;
 import com.aprendiendo.gestor_horarios_omsi.model.TipoJornada;
 import com.aprendiendo.gestor_horarios_omsi.model.Turno;
+import com.aprendiendo.gestor_horarios_omsi.model.TurnoViajeFormatoCsv;
 import com.aprendiendo.gestor_horarios_omsi.model.Viaje;
 import com.aprendiendo.gestor_horarios_omsi.model.ViajeFormatoCsv;
 import com.aprendiendo.gestor_horarios_omsi.utils.FormatearTurnoUtil;
@@ -86,6 +91,74 @@ public class ProcesadorTurnosServiceOpenCsv implements ProcesadorTurnosService {
 
             throw e;
         }
+    }
+
+    /*
+     * ------ SEGUNDO METODO
+     */
+
+    @Override
+    public byte[] procesarArchivoYGenerarMultiplesTurnos(MultipartFile archivo) {
+        List<Turno> listaDeTurnos = extraerTurnosDeCsv(archivo);
+        StringBuilder sb = new StringBuilder();
+
+        for (Turno turno : listaDeTurnos) {
+            sb.append(FormatearTurnoUtil.formatearTurnoString(turno));
+        }
+
+        return sb.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+    private List<Turno> extraerTurnosDeCsv(MultipartFile archivo) {
+        try (Reader reader = new BufferedReader(new InputStreamReader(archivo.getInputStream()))) {
+
+            CsvToBean<TurnoViajeFormatoCsv> csvToBean = new CsvToBeanBuilder<TurnoViajeFormatoCsv>(reader)
+                    .withType(TurnoViajeFormatoCsv.class).withIgnoreEmptyLine(true).withThrowExceptions(true).build();
+
+            List<TurnoViajeFormatoCsv> filasDeTurnosCsv = csvToBean.parse();
+
+            return convertirFilasEnTurnos(filasDeTurnosCsv);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error fatal al leer el archivo CSV: " + e.getMessage(), e);
+        } catch (RuntimeException e) {
+            Throwable causaReal = e.getCause();
+
+            if (causaReal instanceof CsvRequiredFieldEmptyException) {
+                throw new CsvColumnasFaltantes("Faltan columnas obligatorias en el CSV", causaReal);
+            }
+
+            if (causaReal instanceof CsvDataTypeMismatchException) {
+                throw new CsvDatosIncorrectos("El archivo contiene tipos de datos incorrectos", causaReal);
+            }
+
+            throw e;
+        }
+    }
+
+    private List<Turno> convertirFilasEnTurnos(List<TurnoViajeFormatoCsv> filasDeTurnosCsv) {
+
+        Map<String, Turno> mapaTurnos = new HashMap<>();
+
+        for (TurnoViajeFormatoCsv fila : filasDeTurnosCsv) {
+
+            Turno turno = mapaTurnos.computeIfAbsent(fila.getNombre(), nombreClave -> Turno.builder()
+                    .nombre(nombreClave)
+                    .garage(fila.getGarage())
+                    .tipoJornada(TipoJornada.desdeInt(fila.getCodigoJornada()))
+                    .build());
+
+            turno.agregarViaje(
+                    Viaje.builder()
+                            .nombreUnico(fila.getNombreUnico())
+                            .numeroPerfil(fila.getNumeroPerfil())
+                            .horaInicio(fila.getHoraInicio())
+                            .build());
+
+        }
+
+        return new ArrayList<>(mapaTurnos.values());
+
     }
 
 }
