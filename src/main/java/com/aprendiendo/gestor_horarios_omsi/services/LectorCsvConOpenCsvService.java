@@ -4,14 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +20,6 @@ import com.aprendiendo.gestor_horarios_omsi.model.Turno;
 import com.aprendiendo.gestor_horarios_omsi.model.TurnoViajeFormatoCsv;
 import com.aprendiendo.gestor_horarios_omsi.model.Viaje;
 import com.aprendiendo.gestor_horarios_omsi.model.ViajeFormatoCsv;
-import com.aprendiendo.gestor_horarios_omsi.utils.FormatearTurnoUtil;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -30,23 +27,10 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 @Service
-@Primary
-public class ProcesadorTurnosServiceOpenCsv implements ProcesadorTurnosService {
+public class LectorCsvConOpenCsvService implements LectorCsvService {
 
     @Override
-    public byte[] procesarArchivoYGenerarTurno(String nombre, String garage, int jornada, MultipartFile archivo) {
-        Turno turno = new Turno(nombre, garage, TipoJornada.desdeInt(jornada));
-
-        List<Viaje> viajesLeidos = extraerViajesDeCsv(archivo);
-
-        for (Viaje viaje : viajesLeidos) {
-            turno.agregarViaje(viaje);
-        }
-
-        return FormatearTurnoUtil.turnoToBytes(turno);
-    }
-
-    private List<Viaje> extraerViajesDeCsv(MultipartFile archivo) {
+    public List<Viaje> extraerViajesDelCsv(MultipartFile archivo) {
         /*
          * Se abre el flujo de datos del archivo MultipartFile. (try-with-resources,
          * Java cierra automaticamente el archivo)
@@ -93,23 +77,8 @@ public class ProcesadorTurnosServiceOpenCsv implements ProcesadorTurnosService {
         }
     }
 
-    /*
-     * ------ SEGUNDO METODO
-     */
-
     @Override
-    public byte[] procesarArchivoYGenerarMultiplesTurnos(MultipartFile archivo) {
-        List<Turno> listaDeTurnos = extraerTurnosDeCsv(archivo);
-        StringBuilder sb = new StringBuilder();
-
-        for (Turno turno : listaDeTurnos) {
-            sb.append(FormatearTurnoUtil.turnoToString(turno));
-        }
-
-        return sb.toString().getBytes(StandardCharsets.UTF_8);
-    }
-
-    private List<Turno> extraerTurnosDeCsv(MultipartFile archivo) {
+    public List<Turno> extraerTurnosDelCsv(MultipartFile archivo) {
         try (Reader reader = new BufferedReader(new InputStreamReader(archivo.getInputStream()))) {
 
             CsvToBean<TurnoViajeFormatoCsv> csvToBean = new CsvToBeanBuilder<TurnoViajeFormatoCsv>(reader)
@@ -117,7 +86,7 @@ public class ProcesadorTurnosServiceOpenCsv implements ProcesadorTurnosService {
 
             List<TurnoViajeFormatoCsv> filasDeTurnosCsv = csvToBean.parse();
 
-            return convertirFilasEnTurnos(filasDeTurnosCsv);
+            return agruparViajesEnTurnos(filasDeTurnosCsv);
 
         } catch (IOException e) {
             throw new RuntimeException("Error fatal al leer el archivo CSV: " + e.getMessage(), e);
@@ -136,7 +105,7 @@ public class ProcesadorTurnosServiceOpenCsv implements ProcesadorTurnosService {
         }
     }
 
-    private List<Turno> convertirFilasEnTurnos(List<TurnoViajeFormatoCsv> filasDeTurnosCsv) {
+    private List<Turno> agruparViajesEnTurnos(List<TurnoViajeFormatoCsv> filasDeTurnosCsv) {
 
         Map<String, Turno> mapaTurnos = new HashMap<>();
 

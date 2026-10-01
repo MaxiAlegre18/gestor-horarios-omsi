@@ -21,14 +21,14 @@ import com.aprendiendo.gestor_horarios_omsi.exceptions.CsvDatosIncorrectos;
 public class ProcesadorTurnosServiceOpenCsvUnitTests {
 
     @InjectMocks
-    private ProcesadorTurnosServiceOpenCsv procesadorTurnosServiceOpenCsv;
+    private ProcesadorTurnosServiceImpl procesadorTurnosServiceImpl;
 
     @Test
     public void procesarCsvValidoDevuelveArchivoCorrecto() throws Exception {
 
         MockMultipartFile archivo = generarCsvValido();
 
-        byte[] bytesActuales = procesadorTurnosServiceOpenCsv.procesarArchivoYGenerarTurno("Coche 601", "Torcuato", 799,
+        byte[] bytesActuales = procesadorTurnosServiceImpl.procesarArchivoYGenerarTurno("Coche 601", "Torcuato", 799,
                 archivo);
 
         byte[] bytesEsperados = obtenerBytesEsperados("/csv_valido_601/Turno_Coche_601.txt");
@@ -45,7 +45,7 @@ public class ProcesadorTurnosServiceOpenCsvUnitTests {
         MockMultipartFile archivo = generarCsvColumnaHorarioFaltante();
 
         assertThrows(CsvColumnasFaltantes.class,
-                () -> procesadorTurnosServiceOpenCsv.procesarArchivoYGenerarTurno("Coche 601", "Torcuato", 799,
+                () -> procesadorTurnosServiceImpl.procesarArchivoYGenerarTurno("Coche 601", "Torcuato", 799,
                         archivo));
 
     }
@@ -56,7 +56,7 @@ public class ProcesadorTurnosServiceOpenCsvUnitTests {
         MockMultipartFile archivo = generarCsvColumnasHorarioPerfilCambiadas();
 
         assertThrows(CsvDatosIncorrectos.class,
-                () -> procesadorTurnosServiceOpenCsv.procesarArchivoYGenerarTurno("Coche 601", "Torcuato", 799,
+                () -> procesadorTurnosServiceImpl.procesarArchivoYGenerarTurno("Coche 601", "Torcuato", 799,
                         archivo));
 
     }
@@ -66,7 +66,7 @@ public class ProcesadorTurnosServiceOpenCsvUnitTests {
 
         MockMultipartFile archivo = generarCsvValidoConMultiplesTurnos();
 
-        byte[] bytesActuales = procesadorTurnosServiceOpenCsv.procesarArchivoYGenerarMultiplesTurnos(archivo);
+        byte[] bytesActuales = procesadorTurnosServiceImpl.procesarArchivoYGenerarMultiplesTurnos(archivo);
 
         byte[] bytesEsperados = obtenerBytesEsperados("/csv_valido_multiples_turnos/varios-turnos.txt");
 
