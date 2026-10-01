@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -107,7 +107,7 @@ public class OpenCsvLectorService implements LectorCsvService {
 
     private List<Turno> agruparViajesEnTurnos(List<TurnoViajeFormatoCsv> filasDeTurnosCsv) {
 
-        Map<String, Turno> mapaTurnos = new HashMap<>();
+        Map<String, Turno> mapaTurnos = new LinkedHashMap<>();
 
         for (TurnoViajeFormatoCsv fila : filasDeTurnosCsv) {
 
