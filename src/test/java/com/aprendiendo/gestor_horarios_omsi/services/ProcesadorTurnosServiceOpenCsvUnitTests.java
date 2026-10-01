@@ -61,6 +61,21 @@ public class ProcesadorTurnosServiceOpenCsvUnitTests {
 
     }
 
+    @Test
+    public void procesarCsvConMultiplesTurnosCorrectamente() throws Exception {
+
+        MockMultipartFile archivo = generarCsvValidoConMultiplesTurnos();
+
+        byte[] bytesActuales = procesadorTurnosServiceOpenCsv.procesarArchivoYGenerarMultiplesTurnos(archivo);
+
+        byte[] bytesEsperados = obtenerBytesEsperados("/csv_valido_multiples_turnos/varios-turnos.txt");
+
+        String textoActual = convertirBytesYNormalizar(bytesActuales);
+        String textoEsperado = convertirBytesYNormalizar(bytesEsperados);
+
+        assertEquals(textoEsperado, textoActual, "El contenido actual no coincide");
+    }
+
     /*
      * 
      * ------- ------- UTILIDADES ------- -------
@@ -69,6 +84,10 @@ public class ProcesadorTurnosServiceOpenCsvUnitTests {
 
     private MockMultipartFile generarCsvValido() throws Exception {
         return obtenerArchivoCsv("/csv_valido_601/turno-coche-601.csv", "turno-coche-601.csv");
+    }
+
+    private MockMultipartFile generarCsvValidoConMultiplesTurnos() throws Exception {
+        return obtenerArchivoCsv("/csv_valido_multiples_turnos/varios-turnos.csv", "varios-turnos.csv");
     }
 
     private MockMultipartFile generarCsvColumnaHorarioFaltante() throws Exception {
