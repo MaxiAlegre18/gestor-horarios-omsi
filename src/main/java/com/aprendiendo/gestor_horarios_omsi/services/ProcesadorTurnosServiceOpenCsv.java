@@ -43,7 +43,7 @@ public class ProcesadorTurnosServiceOpenCsv implements ProcesadorTurnosService {
             turno.agregarViaje(viaje);
         }
 
-        return FormatearTurnoUtil.formatearTurno(turno);
+        return FormatearTurnoUtil.turnoToBytes(turno);
     }
 
     private List<Viaje> extraerViajesDeCsv(MultipartFile archivo) {
@@ -103,7 +103,7 @@ public class ProcesadorTurnosServiceOpenCsv implements ProcesadorTurnosService {
         StringBuilder sb = new StringBuilder();
 
         for (Turno turno : listaDeTurnos) {
-            sb.append(FormatearTurnoUtil.formatearTurnoString(turno));
+            sb.append(FormatearTurnoUtil.turnoToString(turno));
         }
 
         return sb.toString().getBytes(StandardCharsets.UTF_8);

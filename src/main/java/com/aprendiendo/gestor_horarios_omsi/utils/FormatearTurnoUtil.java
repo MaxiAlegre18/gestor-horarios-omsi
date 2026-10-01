@@ -12,18 +12,11 @@ public class FormatearTurnoUtil {
     private static final String SALTO_LINEA = "\r\n";
     private static final String SEPARADOR = "------------------------------------";
 
-    public static byte[] formatearTurno(Turno turno) {
-        StringBuilder sb = armarCabeceraTurno(turno);
-
-        DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("H:m");
-
-        for (Viaje viaje : turno.getListaViajes()) {
-            sb.append(armarViaje(formatterHora, viaje));
-        }
-        return sb.toString().getBytes(StandardCharsets.UTF_8);
+    public static byte[] turnoToBytes(Turno turno) {
+        return turnoToString(turno).getBytes(StandardCharsets.UTF_8);
     }
 
-    public static String formatearTurnoString(Turno turno) {
+    public static String turnoToString(Turno turno) {
         StringBuilder sb = armarCabeceraTurno(turno);
 
         DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("H:m");
