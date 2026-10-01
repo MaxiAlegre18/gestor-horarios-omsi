@@ -27,7 +27,7 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 @Service
-public class LectorCsvConOpenCsvService implements LectorCsvService {
+public class OpenCsvLectorService implements LectorCsvService {
 
     @Override
     public List<Viaje> extraerViajesDelCsv(MultipartFile archivo) {

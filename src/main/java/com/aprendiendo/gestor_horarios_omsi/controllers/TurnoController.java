@@ -42,7 +42,7 @@ public class TurnoController {
 
     @PostMapping(value = "/generar-multiples-turnos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<byte[]> generarArchivoConMultiplesTurnos(
-            @RequestParam("nombreArchivo") String nombreArchivo,
+            @RequestParam("Nombre del archivo") String nombreArchivo,
             @RequestBody MultipartFile archivo) {
 
         validarFormatoCsv(archivo);
