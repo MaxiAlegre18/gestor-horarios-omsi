@@ -3,8 +3,12 @@ package com.aprendiendo.gestor_horarios_omsi.model;
 import java.time.LocalTime;
 
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Builder
+@Getter
+@Setter
 public class Viaje {
     private String nombreUnico;
     private int numeroPerfil;
@@ -18,18 +22,6 @@ public class Viaje {
 
     public int getHoraInicioEnMinutos() {
         return (horaInicio.getHour() * 60) + horaInicio.getMinute();
-    }
-
-    public String getNombreUnico() {
-        return nombreUnico;
-    }
-
-    public int getNumeroPerfil() {
-        return numeroPerfil;
-    }
-
-    public LocalTime getHoraInicio() {
-        return horaInicio;
     }
 
 }
