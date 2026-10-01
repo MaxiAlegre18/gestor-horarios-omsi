@@ -3,12 +3,14 @@ package com.aprendiendo.gestor_horarios_omsi.model;
 import java.time.LocalTime;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Builder
 @Getter
 @Setter
+@EqualsAndHashCode
 public class Viaje {
     private String nombreUnico;
     private int numeroPerfil;
