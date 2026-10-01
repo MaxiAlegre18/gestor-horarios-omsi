@@ -31,3 +31,36 @@ Torcuato
 0
 440.000
 
+------------------------------------
+
+[newtour]
+Coche 602
+Torcuato
+799
+
+------------------------------------
+
+  Dep.: 5:10:0
+[addtrip]
+501_Lemos-Fonavi
+1
+310.000
+
+  Dep.: 6:0:0
+[addtrip]
+501_Fonavi-Lemos
+0
+360.000
+
+  Dep.: 6:30:0
+[addtrip]
+501_Lemos-Fonavi
+0
+390.000
+
+  Dep.: 7:30:0
+[addtrip]
+501_Fonavi-Lemos
+0
+450.000
+

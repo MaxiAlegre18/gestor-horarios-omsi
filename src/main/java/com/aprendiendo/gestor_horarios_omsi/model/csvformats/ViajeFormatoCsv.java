@@ -1,4 +1,4 @@
-package com.aprendiendo.gestor_horarios_omsi.model;
+package com.aprendiendo.gestor_horarios_omsi.model.csvformats;
 
 import java.time.LocalTime;
 

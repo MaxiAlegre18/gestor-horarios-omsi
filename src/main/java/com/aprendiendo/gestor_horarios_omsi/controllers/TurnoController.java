@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -24,7 +25,7 @@ public class TurnoController {
         this.procesadorTurnosService = procesadorTurnosService;
     }
 
-    @PostMapping(value = "/generar-archivo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/generar-turno", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<byte[]> generarArchivoTurno(
             @RequestParam("nombre") String nombreTurno,
             @RequestParam("garage") String garage,
@@ -37,6 +38,18 @@ public class TurnoController {
                 archivo);
 
         return new ResponseEntity<>(archivoGenerado, armarHttpHeaders(nombreTurno), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/generar-multiples-turnos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<byte[]> generarArchivoConMultiplesTurnos(
+            @RequestParam("Nombre del archivo") String nombreArchivo,
+            @RequestBody MultipartFile archivo) {
+
+        validarFormatoCsv(archivo);
+
+        byte[] archivoGenerado = procesadorTurnosService.procesarArchivoYGenerarMultiplesTurnos(archivo);
+
+        return new ResponseEntity<>(archivoGenerado, armarHttpHeaders(nombreArchivo), HttpStatus.OK);
     }
 
     private void validarFormatoCsv(MultipartFile archivo) {

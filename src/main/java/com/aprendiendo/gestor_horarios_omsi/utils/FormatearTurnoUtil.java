@@ -12,15 +12,19 @@ public class FormatearTurnoUtil {
     private static final String SALTO_LINEA = "\r\n";
     private static final String SEPARADOR = "------------------------------------";
 
-    public static byte[] formatearTurno(Turno turno) {
+    public static byte[] turnoToBytes(Turno turno) {
+        return turnoToString(turno).getBytes(StandardCharsets.UTF_8);
+    }
+
+    public static String turnoToString(Turno turno) {
         StringBuilder sb = armarCabeceraTurno(turno);
 
-        DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("H:mm");
+        DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("H:m");
 
         for (Viaje viaje : turno.getListaViajes()) {
             sb.append(armarViaje(formatterHora, viaje));
         }
-        return sb.toString().getBytes(StandardCharsets.UTF_8);
+        return sb.toString();
     }
 
     private static StringBuilder armarCabeceraTurno(Turno turno) {
@@ -39,7 +43,7 @@ public class FormatearTurnoUtil {
 
     private static StringBuilder armarViaje(DateTimeFormatter formatterHora, Viaje viaje) {
         StringBuilder sb = new StringBuilder();
-        String horaFormateada = viaje.getHoraInicio().format(formatterHora) + ":00";
+        String horaFormateada = viaje.getHoraInicio().format(formatterHora) + ":0";
         sb.append("  Dep.: ").append(horaFormateada).append(SALTO_LINEA);
         sb.append("[addtrip]").append(SALTO_LINEA);
         sb.append(viaje.getNombreUnico()).append(SALTO_LINEA);

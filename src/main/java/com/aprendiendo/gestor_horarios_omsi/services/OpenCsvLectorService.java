@@ -4,10 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,8 +18,8 @@ import com.aprendiendo.gestor_horarios_omsi.exceptions.CsvDatosIncorrectos;
 import com.aprendiendo.gestor_horarios_omsi.model.TipoJornada;
 import com.aprendiendo.gestor_horarios_omsi.model.Turno;
 import com.aprendiendo.gestor_horarios_omsi.model.Viaje;
-import com.aprendiendo.gestor_horarios_omsi.model.ViajeFormatoCsv;
-import com.aprendiendo.gestor_horarios_omsi.utils.FormatearTurnoUtil;
+import com.aprendiendo.gestor_horarios_omsi.model.csvformats.TurnoViajeFormatoCsv;
+import com.aprendiendo.gestor_horarios_omsi.model.csvformats.ViajeFormatoCsv;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -25,23 +27,10 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 @Service
-@Primary
-public class ProcesadorTurnosServiceOpenCsv implements ProcesadorTurnosService {
+public class OpenCsvLectorService implements LectorCsvService {
 
     @Override
-    public byte[] procesarArchivoYGenerarTurno(String nombre, String garage, int jornada, MultipartFile archivo) {
-        Turno turno = new Turno(nombre, garage, TipoJornada.desdeInt(jornada));
-
-        List<Viaje> viajesLeidos = extraerViajesDeCsv(archivo);
-
-        for (Viaje viaje : viajesLeidos) {
-            turno.agregarViaje(viaje);
-        }
-
-        return FormatearTurnoUtil.formatearTurno(turno);
-    }
-
-    private List<Viaje> extraerViajesDeCsv(MultipartFile archivo) {
+    public List<Viaje> extraerViajesDelCsv(MultipartFile archivo) {
         /*
          * Se abre el flujo de datos del archivo MultipartFile. (try-with-resources,
          * Java cierra automaticamente el archivo)
@@ -86,6 +75,59 @@ public class ProcesadorTurnosServiceOpenCsv implements ProcesadorTurnosService {
 
             throw e;
         }
+    }
+
+    @Override
+    public List<Turno> extraerTurnosDelCsv(MultipartFile archivo) {
+        try (Reader reader = new BufferedReader(new InputStreamReader(archivo.getInputStream()))) {
+
+            CsvToBean<TurnoViajeFormatoCsv> csvToBean = new CsvToBeanBuilder<TurnoViajeFormatoCsv>(reader)
+                    .withType(TurnoViajeFormatoCsv.class).withIgnoreEmptyLine(true).withThrowExceptions(true).build();
+
+            List<TurnoViajeFormatoCsv> filasDeTurnosCsv = csvToBean.parse();
+
+            return agruparViajesEnTurnos(filasDeTurnosCsv);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error fatal al leer el archivo CSV: " + e.getMessage(), e);
+        } catch (RuntimeException e) {
+            Throwable causaReal = e.getCause();
+
+            if (causaReal instanceof CsvRequiredFieldEmptyException) {
+                throw new CsvColumnasFaltantes("Faltan columnas obligatorias en el CSV", causaReal);
+            }
+
+            if (causaReal instanceof CsvDataTypeMismatchException) {
+                throw new CsvDatosIncorrectos("El archivo contiene tipos de datos incorrectos", causaReal);
+            }
+
+            throw e;
+        }
+    }
+
+    private List<Turno> agruparViajesEnTurnos(List<TurnoViajeFormatoCsv> filasDeTurnosCsv) {
+
+        Map<String, Turno> mapaTurnos = new LinkedHashMap<>();
+
+        for (TurnoViajeFormatoCsv fila : filasDeTurnosCsv) {
+
+            Turno turno = mapaTurnos.computeIfAbsent(fila.getNombre(), nombreClave -> Turno.builder()
+                    .nombre(nombreClave)
+                    .garage(fila.getGarage())
+                    .tipoJornada(TipoJornada.desdeInt(fila.getCodigoJornada()))
+                    .build());
+
+            turno.agregarViaje(
+                    Viaje.builder()
+                            .nombreUnico(fila.getNombreUnico())
+                            .numeroPerfil(fila.getNumeroPerfil())
+                            .horaInicio(fila.getHoraInicio())
+                            .build());
+
+        }
+
+        return new ArrayList<>(mapaTurnos.values());
+
     }
 
 }
