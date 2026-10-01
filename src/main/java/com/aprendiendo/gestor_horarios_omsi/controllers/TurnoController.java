@@ -25,7 +25,7 @@ public class TurnoController {
         this.procesadorTurnosService = procesadorTurnosService;
     }
 
-    @PostMapping(value = "/generar-archivo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/generar-turno", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<byte[]> generarArchivoTurno(
             @RequestParam("nombre") String nombreTurno,
             @RequestParam("garage") String garage,
@@ -40,15 +40,16 @@ public class TurnoController {
         return new ResponseEntity<>(archivoGenerado, armarHttpHeaders(nombreTurno), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/generar-archivo-multiples", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/generar-multiples-turnos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<byte[]> generarArchivoConMultiplesTurnos(
+            @RequestParam("nombreArchivo") String nombreArchivo,
             @RequestBody MultipartFile archivo) {
 
         validarFormatoCsv(archivo);
 
         byte[] archivoGenerado = procesadorTurnosService.procesarArchivoYGenerarMultiplesTurnos(archivo);
 
-        return new ResponseEntity<>(archivoGenerado, armarHttpHeaders("jornada"), HttpStatus.OK);
+        return new ResponseEntity<>(archivoGenerado, armarHttpHeaders(nombreArchivo), HttpStatus.OK);
     }
 
     private void validarFormatoCsv(MultipartFile archivo) {
