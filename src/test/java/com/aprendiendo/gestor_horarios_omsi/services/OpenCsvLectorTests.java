@@ -9,10 +9,8 @@ import java.io.InputStream;
 import java.time.LocalTime;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
 import com.aprendiendo.gestor_horarios_omsi.exceptions.CsvColumnasFaltantes;
@@ -21,20 +19,19 @@ import com.aprendiendo.gestor_horarios_omsi.model.TipoJornada;
 import com.aprendiendo.gestor_horarios_omsi.model.Turno;
 import com.aprendiendo.gestor_horarios_omsi.model.Viaje;
 
-@ExtendWith(MockitoExtension.class)
 public class OpenCsvLectorTests {
 
-    @InjectMocks
     private OpenCsvLectorService openCsvLectorService;
 
-    private MockMultipartFile csvTurnoValido;
-    private MockMultipartFile csvMultiplesTurnosValido;
-    private MockMultipartFile csvTurnoColumnaFaltante;
-    private MockMultipartFile csvTurnoColumnasHorarioPerfilCambiadas;
+    @BeforeEach
+    public void setUp() {
+        openCsvLectorService = new OpenCsvLectorService();
+    }
 
     @Test
-    public void extraerViajesDelCsvCorrectamente() {
-        csvTurnoValido = generarCsvValido();
+    public void extraerViajesDelCsvCorrectamente() throws IOException {
+        MockMultipartFile csvTurnoValido = obtenerArchivoCsv("/csv_valido_601/turno-coche-601.csv",
+                "turno-coche-601.csv");
 
         List<Viaje> viajesEsperados = List.of(
                 new Viaje("501_Lemos-Fonavi", 1, LocalTime.of(5, 0)),
@@ -46,8 +43,9 @@ public class OpenCsvLectorTests {
     }
 
     @Test
-    public void extraerTurnosDelCsvCorrectamente() {
-        csvMultiplesTurnosValido = generarCsvValidoConMultiplesTurnos();
+    public void extraerTurnosDelCsvCorrectamente() throws IOException {
+        MockMultipartFile csvMultiplesTurnosValido = obtenerArchivoCsv("/csv_valido_multiples_turnos/varios-turnos.csv",
+                "varios-turnos.csv");
 
         List<Viaje> viajesPrimerTurno = List.of(
                 new Viaje("501_Lemos-Fonavi", 1, LocalTime.of(5, 0)),
@@ -69,16 +67,19 @@ public class OpenCsvLectorTests {
     }
 
     @Test
-    public void extraerViajesDelCsvConColumnasFaltantesArrojaExcepcion() {
-        csvTurnoColumnaFaltante = generarCsvColumnaHorarioFaltante();
+    public void extraerViajesDelCsvConColumnasFaltantesArrojaExcepcion() throws IOException {
+        MockMultipartFile csvTurnoColumnaFaltante = obtenerArchivoCsv(
+                "/csv_invalidos/csv_columnas_faltantes_horario.csv", "csv_columnas_faltantes_horario");
 
         assertThrows(CsvColumnasFaltantes.class,
                 () -> openCsvLectorService.extraerViajesDelCsv(csvTurnoColumnaFaltante));
     }
 
     @Test
-    public void extraerViajesDelCsvConColumnasIntercambiadasArrojaExcepcion() {
-        csvTurnoColumnasHorarioPerfilCambiadas = generarCsvColumnasHorarioPerfilCambiadas();
+    public void extraerViajesDelCsvConColumnasIntercambiadasArrojaExcepcion() throws IOException {
+        MockMultipartFile csvTurnoColumnasHorarioPerfilCambiadas = obtenerArchivoCsv(
+                "/csv_invalidos/csv_columnas_incorrectas_horario_perfil.csv",
+                "csv_columnas_incorrectas_horario_perfil");
 
         assertThrows(CsvDatosIncorrectos.class,
                 () -> openCsvLectorService.extraerViajesDelCsv(csvTurnoColumnasHorarioPerfilCambiadas));
@@ -88,31 +89,11 @@ public class OpenCsvLectorTests {
      * UTILIDADES
      */
 
-    private MockMultipartFile generarCsvValido() {
-        return obtenerArchivoCsv("/csv_valido_601/turno-coche-601.csv", "turno-coche-601.csv");
-    }
-
-    private MockMultipartFile generarCsvValidoConMultiplesTurnos() {
-        return obtenerArchivoCsv("/csv_valido_multiples_turnos/varios-turnos.csv", "varios-turnos.csv");
-    }
-
-    private MockMultipartFile generarCsvColumnaHorarioFaltante() {
-        return obtenerArchivoCsv("/csv_invalidos/csv_columnas_faltantes_horario.csv", "csv_columnas_faltantes_horario");
-    }
-
-    private MockMultipartFile generarCsvColumnasHorarioPerfilCambiadas() {
-        return obtenerArchivoCsv("/csv_invalidos/csv_columnas_incorrectas_horario_perfil.csv",
-                "csv_columnas_incorrectas_horario_perfil");
-    }
-
-    private MockMultipartFile obtenerArchivoCsv(String direccion, String nombreArchivo) {
+    private MockMultipartFile obtenerArchivoCsv(String direccion, String nombreArchivo) throws IOException {
         try (InputStream inputStream = getClass().getResourceAsStream(direccion)) {
 
             assertNotNull(inputStream, "No se encontró el archivo CSV en la ruta");
             return new MockMultipartFile("archivo", nombreArchivo, "text/csv", inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 
